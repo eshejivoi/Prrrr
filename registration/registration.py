@@ -46,8 +46,7 @@ def user_choice():
 
 def main():
     create_db()
-    display_users()  # Показать список пользователей перед выбором действия
-
+    print(display_users())  # Показать список пользователей перед выбором действия
     choice = user_choice()
 
     if choice == '1':
