@@ -1,7 +1,7 @@
 import pytest
 import sqlite3
 import os
-from registration.registration import create_db, add_user, authenticate_user, display_users
+from registration.registration import create_db, add_user, authenticate_user, display_users, DB_NAME
 
 @pytest.fixture(scope="module")
 def setup_database():
@@ -35,6 +35,34 @@ def test_add_new_user(setup_database, connection):
     cursor.execute("SELECT * FROM users WHERE username='testuser';")
     user = cursor.fetchone()
     assert user, "Пользователь должен быть добавлен в базу данных."
+
+def test_exist_login():
+    """Тест на добавление пользователя с существующим логином."""
+
+def test_show_users(capsys):
+    """Тест на отображения списка пользователей"""
+
+    # Очистка таблицы перед тестом
+    with sqlite3.connect(DB_NAME) as conn:
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM users')
+        conn.commit()
+
+    # Добавляем тестовых пользователей
+    add_user('test_user1', 'test1@example.com', 'password1')
+    add_user('test_user2', 'test2@example.com', 'password2')
+
+    # Вызываем функцию, которая печатает пользователей
+    display_users()
+
+    # Перехватываем вывод
+    captured = capsys.readouterr()
+    output = captured.out
+
+    # Проверяем наличие ожидаемых записей
+    assert 'Логин: test_user1, Электронная почта: test1@example.com' in output
+    assert 'Логин: test_user2, Электронная почта: test2@example.com' in output
+
 
 # Возможные варианты тестов:
 """
